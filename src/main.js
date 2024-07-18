@@ -1,27 +1,65 @@
 const Player = {
     score: 0,
     name: "",
+    turn: true,
 }
+
 let player_1 = Object.create(Player);
 let player_2 = Object.create(Player);
-let currentPlayer = player_1;
+player_2.turn = false;
+
 $("document").ready(function(){
     start();
 });
+
 let start = () => {
     console.log("Game started");
+    erzeugeSpielfeld();
 }
-$(".plus20").click(function(){
-    currentPlayer.score += 20;
-    currentPlayer === player_1 ? currentPlayer = player_2 : currentPlayer = player_1;
+
+$(".plus10").click(function(){
+    console.log("plus10 clicked");
+    givePoints(10);
     update();
 });
-let update = () => {
+
+$(".plus20").click(function(){
+    console.log("plus20 clicked");
+    givePoints(20);
+    update();
+});
     
-    if(player_1.score != null || player_1.score != undefined){
-        console.log($(".plus5"));
+let givePoints = (points) => {
+  
+    if(player_1.turn){
+        player_1.score += points;
     }
-    if(player_2.score != null || player_2.score != undefined){
-        console.log("kommt rein?");
+    if(player_2.turn){
+        player_2.score += points;
     }
+}
+
+let update = () => { 
+    player_1.turn = !player_1.turn;
+    player_2.turn = !player_2.turn;  
+    document.getElementById("player_1_score").innerHTML = player_1.score;
+    document.getElementById("player_2_score").innerHTML = player_2.score;
 };
+
+let erzeugeSpielfeld = () => {
+//Bullseye,
+//Bull,
+//20 x 1x Felder, 
+//20 x 3x Felder,
+//weitere 20 x 1x Felder
+//20 x 2x Felder
+document.getElementById("spielfeld").innerHTML = "<div class='bullseye'>"+returnSvgString(50, 399, false)+"</div>"
+}
+
+let returnSvgString = (height, width, circle) => {
+    if(circle){
+        return "<svg width='"+width+"' height='"+height+"'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='3' fill='red' /></svg>";
+    }else{
+        return "<svg width='"+width+"' height='"+height+"'><polygon points='0, 0, "+width+", 0, "+width/2+", "+height+"' fill='yellow' /></svg>"
+    }
+}
